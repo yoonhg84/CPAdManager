@@ -1,5 +1,7 @@
 # CPAdManager
-Admob, Facebook 광고를 함께 사용하기 위해 만들어봄.
+Admob, Facebook 등 다수의 광고를 함께 사용하기 위해 만들어봄.
+
+광고 요청이 실패하면 다음 광고를 요청.
 
 ## How to use
 
@@ -129,3 +131,4 @@ public class MainActivity extends AppCompatActivity {
 ## To do
 
 - 프로젝트에 적용
+- 삽입 광고
