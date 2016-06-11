@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CPAdManager/cpadmanager.iml" filepath="$PROJECT_DIR$/CPAdManager/cpadmanager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CPAdManagerSample.iml" filepath="$PROJECT_DIR$/CPAdManagerSample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Sample/app.iml" filepath="$PROJECT_DIR$/Sample/app.iml" />
+    </modules>
+  </component>
+</project>
