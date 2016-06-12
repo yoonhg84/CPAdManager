@@ -12,7 +12,7 @@ import com.facebook.ads.AdView;
 
 import net.chopestory.cpadmanager.CPBannerAd;
 import net.chopestory.cpadmanager.CPContextObject;
-import net.chopestory.cpadmanager.OnAdRequestListener;
+import net.chopestory.cpadmanager.OnBannerAdRequestListener;
 
 import java.lang.ref.WeakReference;
 import java.util.Random;
@@ -23,7 +23,7 @@ import java.util.Random;
  */
 public class CPFacebookBannerAd extends CPContextObject implements CPBannerAd, AdListener {
     protected AdView adView = null;
-    protected WeakReference<OnAdRequestListener> requestListenerReference = null;
+    protected WeakReference<OnBannerAdRequestListener> requestListenerReference = null;
 
     public CPFacebookBannerAd(@NonNull Context context) {
         super(context);
@@ -69,7 +69,7 @@ public class CPFacebookBannerAd extends CPContextObject implements CPBannerAd, A
     }
 
     @Override
-    public void setOnRequestListener(OnAdRequestListener listener) {
+    public void setOnBannerAdRequestListener(OnBannerAdRequestListener listener) {
         requestListenerReference = new WeakReference<>(listener);
     }
 
@@ -78,7 +78,7 @@ public class CPFacebookBannerAd extends CPContextObject implements CPBannerAd, A
         Log.d("AdManager", "facebook banner ad request failed");
 
         if (requestListenerReference != null && requestListenerReference.get() != null) {
-            requestListenerReference.get().onRequestFailure();
+            requestListenerReference.get().onBannerRequestFailure();
         }
     }
 

@@ -8,11 +8,10 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 
 import net.chopestory.cpadmanager.CPBannerAd;
 import net.chopestory.cpadmanager.CPContextObject;
-import net.chopestory.cpadmanager.OnAdRequestListener;
+import net.chopestory.cpadmanager.OnBannerAdRequestListener;
 
 import java.lang.ref.WeakReference;
 import java.util.Random;
@@ -23,7 +22,7 @@ import java.util.Random;
  */
 public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
     protected AdView adView = null;
-    protected WeakReference<OnAdRequestListener> requestListenerReference = null;
+    protected WeakReference<OnBannerAdRequestListener> requestListenerReference = null;
 
     public CPAdmobBannerAd(@NonNull Context context) {
         super(context);
@@ -37,7 +36,7 @@ public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
             Log.d("AdManager", "admob banner ad request failed");
 
             if (requestListenerReference != null && requestListenerReference.get() != null) {
-                requestListenerReference.get().onRequestFailure();
+                requestListenerReference.get().onBannerRequestFailure();
             }
         }
 
@@ -99,7 +98,7 @@ public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
     }
 
     @Override
-    public void setOnRequestListener(OnAdRequestListener listener) {
+    public void setOnBannerAdRequestListener(OnBannerAdRequestListener listener) {
         requestListenerReference = new WeakReference<>(listener);
     }
 }

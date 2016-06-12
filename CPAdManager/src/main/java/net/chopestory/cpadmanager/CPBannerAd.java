@@ -10,5 +10,5 @@ public interface CPBannerAd extends CPAd {
     View getAdView();
     void requestAd();
     void destroy();
-    void setOnRequestListener(OnAdRequestListener listener);
+    void setOnBannerAdRequestListener(OnBannerAdRequestListener listener);
 }
