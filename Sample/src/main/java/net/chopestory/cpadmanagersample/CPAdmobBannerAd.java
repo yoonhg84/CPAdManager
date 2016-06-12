@@ -93,7 +93,7 @@ public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
             adView.destroy();
             adView = null;
 
-            Log.d("AdManager", "admob destroyed");
+            Log.d("AdManager", "admob banner destroyed");
         }
     }
 

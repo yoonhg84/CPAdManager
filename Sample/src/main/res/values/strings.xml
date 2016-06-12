@@ -5,4 +5,5 @@
     <string name="admob_interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
 
     <string name="facebook_banner_placement_id">893127754073705_909121259141021</string>
+    <string name="facebook_interstitial_placement_id">893127754073705_909204815799332</string>
 </resources>

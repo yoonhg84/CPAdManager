@@ -1,6 +1,7 @@
 package net.chopestory.cpadmanager;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -8,31 +9,72 @@ import android.view.ViewGroup;
 
 import junit.framework.Assert;
 
+import java.lang.ref.WeakReference;
+
 /**
  * CPAdManager
  * Created by Chope on 16. 6. 11..
  */
-public class CPAdManager extends CPContextObject implements OnAdRequestListener {
+public class CPAdManager extends CPContextObject implements OnBannerAdRequestListener, OnInterstitialAdRequestListener {
     private CPBannerAd[] bannerAds = null;
-
-    private ViewGroup adLayout = null;
+    private CPInterstitialAd[] interstitialAds = null;
     private int currentBannerAdIndex = 0;
+    private int currentInterstitialAdIndex = 0;
+    private ViewGroup adLayout = null;
 
-    public CPAdManager(@NonNull Context context, @NonNull ViewGroup layout, @NonNull IBannerAdsCreator bannerAdsCreator) {
+    private WeakReference<OnAdManagerInterstitialListener> adManagerInterstitialListenerWeakReference = null;
+
+    public long reloadDelayMillisAfterAllBannerAdRequestsFailed = 30000;
+
+    private CPAdManager(@NonNull Context context, @NonNull ViewGroup layout) {
         super(context);
 
         this.adLayout = layout;
+    }
 
-        bannerAds = bannerAdsCreator.createBannerAds(context);
+    public CPAdManager(@NonNull Context context, @NonNull ViewGroup layout, @NonNull BannerAdsCreator bannerAdsCreator) {
+        this(context, layout);
+
+        configureBannerAds(bannerAdsCreator);
+    }
+
+    public CPAdManager(@NonNull Context context, @NonNull ViewGroup layout, @NonNull InterstitialAdsCreator interstitialAdsCreator) {
+        this(context, layout);
+
+        configureInterstitialAds(interstitialAdsCreator);
+    }
+
+    public CPAdManager(@NonNull Context context, @NonNull ViewGroup layout, @NonNull InterstitialAdsCreator interstitialAdsCreator, @NonNull BannerAdsCreator bannerAdsCreator) {
+        this(context, layout);
+
+        configureBannerAds(bannerAdsCreator);
+        configureInterstitialAds(interstitialAdsCreator);
+    }
+
+    private void configureBannerAds(BannerAdsCreator creator) {
+        bannerAds = creator.createBannerAds(getContext());
         Assert.assertTrue(bannerAds.length > 0);
 
         Log.d("AdManager", "init banner ads : " + bannerAds.length);
 
         for (CPBannerAd bannerAd : bannerAds) {
-            bannerAd.setOnRequestListener(this);
+            bannerAd.setOnBannerAdRequestListener(this);
         }
 
         Log.d("AdManager", "bannerAdIndex : " + currentBannerAdIndex);
+    }
+
+    private void configureInterstitialAds(InterstitialAdsCreator creator) {
+        interstitialAds = creator.createInterstitialAds(getContext());
+        Assert.assertTrue(interstitialAds.length > 0);
+
+        Log.d("AdManager", "init interstitial ads : " + interstitialAds.length);
+
+        for (CPInterstitialAd interstitialAd : interstitialAds) {
+            interstitialAd.setOnInterstitialAdRequestListener(this);
+        }
+
+        Log.d("AdManager", "interstitialAdIndex : " + currentInterstitialAdIndex);
     }
 
     public void destroy() {
@@ -44,10 +86,18 @@ public class CPAdManager extends CPContextObject implements OnAdRequestListener 
             bannerAd.destroy();
         }
 
+        for (CPInterstitialAd interstitialAd : interstitialAds) {
+            interstitialAd.destroy();
+        }
+
         Log.d("AdManager", "banner ads destroyed");
     }
 
-    public void requestBanner() {
+    public void setOnAdManagerInterstitialListener(OnAdManagerInterstitialListener listener) {
+        this.adManagerInterstitialListenerWeakReference = new WeakReference<>(listener);
+    }
+
+    public void requestBannerAd() {
         Assert.assertNotNull(bannerAds);
 
         if (adLayout == null) {
@@ -68,14 +118,85 @@ public class CPAdManager extends CPContextObject implements OnAdRequestListener 
         }
     }
 
-    @Override
-    public void onRequestFailure() {
-        currentBannerAdIndex = (currentBannerAdIndex + 1) % bannerAds.length;
-        Log.d("AdManager", "bannerAdIndex : " + currentBannerAdIndex);
-        requestBanner();
+    public void requestInterstitialAd() {
+        Assert.assertNotNull(interstitialAds);
+
+        CPInterstitialAd interstitialAd = interstitialAds[currentInterstitialAdIndex];
+        interstitialAd.requestAd();
     }
 
-    public interface IBannerAdsCreator {
+    public void showInterstitialAd() {
+        Assert.assertTrue(currentInterstitialAdIndex < interstitialAds.length);
+
+        final CPInterstitialAd interstitialAd = interstitialAds[currentInterstitialAdIndex];
+        interstitialAd.showAd();
+    }
+
+    public boolean isInterstitialAdLoaded() {
+        Assert.assertTrue(currentInterstitialAdIndex < interstitialAds.length);
+
+        CPInterstitialAd interstitialAd = interstitialAds[currentInterstitialAdIndex];
+        return interstitialAd.isLoaded();
+    }
+
+    @Override
+    public void onBannerRequestFailure() {
+        currentBannerAdIndex = (currentBannerAdIndex + 1) % bannerAds.length;
+        Log.d("AdManager", "bannerAdIndex : " + currentBannerAdIndex);
+
+        if (currentBannerAdIndex == 0) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    requestBannerAd();
+                }
+            }, reloadDelayMillisAfterAllBannerAdRequestsFailed);
+        } else {
+            requestBannerAd();
+        }
+    }
+
+    @Override
+    public void onInterstitialRequestFailed() {
+        currentInterstitialAdIndex = (currentInterstitialAdIndex + 1) % interstitialAds.length;
+
+        if (currentInterstitialAdIndex == 0) {
+            if (adManagerInterstitialListenerWeakReference != null && adManagerInterstitialListenerWeakReference.get() != null) {
+                adManagerInterstitialListenerWeakReference.get().onAllRequestsFailed(this);
+            }
+        } else {
+            requestInterstitialAd();
+        }
+    }
+
+    @Override
+    public void onInterstitialRequestSuccess() {
+        if (adManagerInterstitialListenerWeakReference != null && adManagerInterstitialListenerWeakReference.get() != null) {
+            adManagerInterstitialListenerWeakReference.get().onRequestSucccess(this);
+        } else {
+            CPInterstitialAd interstitialAd = interstitialAds[currentInterstitialAdIndex];
+            interstitialAd.showAd();
+        }
+    }
+
+    @Override
+    public void onInterstitialClose() {
+        if (adManagerInterstitialListenerWeakReference != null && adManagerInterstitialListenerWeakReference.get() != null) {
+            adManagerInterstitialListenerWeakReference.get().onAdClosed(this);
+        }
+    }
+
+    public interface BannerAdsCreator {
         CPBannerAd[] createBannerAds(Context context);
+    }
+
+    public interface InterstitialAdsCreator {
+        CPInterstitialAd[] createInterstitialAds(Context context);
+    }
+
+    public interface OnAdManagerInterstitialListener {
+        void onAllRequestsFailed(CPAdManager adManager);
+        void onAdClosed(CPAdManager adManager);
+        void onRequestSucccess(CPAdManager adManager);
     }
 }

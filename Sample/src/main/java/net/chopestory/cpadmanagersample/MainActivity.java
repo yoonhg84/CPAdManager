@@ -19,11 +19,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().hide();
+//        }
+
         ViewGroup adLayout = (ViewGroup) findViewById(R.id.adLayout);
         Assert.assertNotNull(adLayout);
 
-        adManager = new CPAdManager(this, adLayout, new BannerAdsCreator());
-        adManager.requestBanner();
+        adManager = new CPAdManager(this, adLayout, new AdsCreator(), new AdsCreator());
+        adManager.requestBannerAd();
+//        adManager.requestInterstitialAd();
 
         Button nextButton = (Button) findViewById(R.id.nextActivityButton);
         if (nextButton != null) {
