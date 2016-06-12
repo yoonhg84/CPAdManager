@@ -82,12 +82,16 @@ public class CPAdManager extends CPContextObject implements OnBannerAdRequestLis
             adLayout.removeAllViews();
         }
 
-        for (CPBannerAd bannerAd : bannerAds) {
-            bannerAd.destroy();
+        if (bannerAds != null) {
+            for (CPBannerAd bannerAd : bannerAds) {
+                bannerAd.destroy();
+            }
         }
 
-        for (CPInterstitialAd interstitialAd : interstitialAds) {
-            interstitialAd.destroy();
+        if (interstitialAds != null) {
+            for (CPInterstitialAd interstitialAd : interstitialAds) {
+                interstitialAd.destroy();
+            }
         }
 
         Log.d("AdManager", "banner ads destroyed");
