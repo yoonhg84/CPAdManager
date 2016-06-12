@@ -38,8 +38,8 @@ public class CPAdManager extends CPContextObject implements OnBannerAdRequestLis
         configureBannerAds(bannerAdsCreator);
     }
 
-    public CPAdManager(@NonNull Context context, @NonNull ViewGroup layout, @NonNull InterstitialAdsCreator interstitialAdsCreator) {
-        this(context, layout);
+    public CPAdManager(@NonNull Context context, @NonNull InterstitialAdsCreator interstitialAdsCreator) {
+        super(context);
 
         configureInterstitialAds(interstitialAdsCreator);
     }
