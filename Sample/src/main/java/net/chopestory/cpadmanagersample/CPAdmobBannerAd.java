@@ -27,8 +27,6 @@ public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
 
     public CPAdmobBannerAd(@NonNull Context context) {
         super(context);
-
-        MobileAds.initialize(context, getContext().getString(R.string.admob_app_id));
     }
 
     private AdListener adListener = new AdListener() {

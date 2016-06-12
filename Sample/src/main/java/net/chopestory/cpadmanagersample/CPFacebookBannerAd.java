@@ -40,7 +40,7 @@ public class CPFacebookBannerAd extends CPContextObject implements CPBannerAd, A
         if (adView == null) {
             boolean isTablet = context.getResources().getBoolean(R.bool.is_tablet);
             AdSize adSize = isTablet ? AdSize.BANNER_HEIGHT_90 : AdSize.BANNER_HEIGHT_50;
-            adView = new AdView(context, context.getString(R.string.facebook_banner_ad_id), adSize);
+            adView = new AdView(context, context.getString(R.string.facebook_banner_placement_id), adSize);
             adView.setAdListener(this);
 
             Log.d("AdManager", "facebook banner ad created");

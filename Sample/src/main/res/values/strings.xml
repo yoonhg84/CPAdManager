@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">CPAdManagerSample</string>
 
-    <string name="admob_app_id">ca-app-pub-6890235970069666~2328154962</string>
-    <string name="admob_banner_ad_unit_id">ca-app-pub-6890235970069666/3804888163</string>
-    <string name="facebook_banner_ad_id">1351290504887194_1351290761553835</string>
+    <string name="admob_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+
+    <string name="facebook_banner_placement_id">893127754073705_909121259141021</string>
 </resources>
