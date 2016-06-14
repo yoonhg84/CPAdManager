@@ -19,7 +19,7 @@ public class AdsCreator implements CPAdManager.BannerAdsCreator, CPAdManager.Int
 
     @Override
     public CPInterstitialAd[] createInterstitialAds(Context context) {
-//        return new CPInterstitialAd[] { new CPFacebookInterstitialAd(context), new CPAdmobInterstitialAd(context) };
-        return new CPInterstitialAd[] { new CPAdmobInterstitialAd(context) };
+        return new CPInterstitialAd[] { new CPFacebookInterstitialAd(context), new CPAdmobInterstitialAd(context) };
+//        return new CPInterstitialAd[] { new CPAdmobInterstitialAd(context) };
     }
 }
