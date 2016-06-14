@@ -1,11 +1,14 @@
 # CPAdManager
-Admob, Facebook 등 다수의 광고를 함께 사용하기 위해 만들어봄.
 
-광고 요청이 실패하면 다음 광고를 요청.
+Android 앱 [도서관 좌석 정보](https://play.google.com/store/apps/details?id=yhg.library.cau) 에서 Admob, Facebook 등의 광고를 보여주기 위해 개발하였습니다.
+
+Admob, Facebook 외에도 추가 가능하도록 하였지만 테스트는 하지 않아 장담할 수 없습니다..;
 
 ## How to use
 
-각 광고를 어떻게 처리할지를 구현해야 한다.
+각 광고를 어떻게 요청하고 보여주는지를 구현해야 합니다.
+
+admob, facebook 광고만 사용하신다면 sample에서 복사해서 사용하시면 됩니다.
 
 ### Banner
 
@@ -273,7 +276,3 @@ public class TwoAdsActivity extends AppCompatActivity implements CPAdManager.OnA
 
 ```
 
-## To do
-
-- 프로젝트에 적용
-- 삽입 광고
