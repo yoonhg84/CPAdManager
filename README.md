@@ -21,8 +21,6 @@ public class AdmobBannerAd extends CPContextObject implements CPBannerAd {
         public void onAdFailedToLoad(int i) {
             super.onAdFailedToLoad(i);
 
-            Log.d("AdManager", "admob banner ad request failed");
-
             if (requestListenerReference != null && requestListenerReference.get() != null) {
                 requestListenerReference.get().onBannerRequestFailure();
             }
@@ -31,8 +29,6 @@ public class AdmobBannerAd extends CPContextObject implements CPBannerAd {
         @Override
         public void onAdLoaded() {
             super.onAdLoaded();
-
-            Log.d("AdManager", "admob banner ad request success");
         }
     };
 
@@ -49,8 +45,6 @@ public class AdmobBannerAd extends CPContextObject implements CPBannerAd {
             adView.setAdSize(AdSize.SMART_BANNER);
             adView.setAdUnitId(context.getString(R.string.admob_banner_ad_unit_id));
             adView.setAdListener(adListener);
-
-            Log.d("AdManager", "admob banner adView created");
         }
         return adView;
     }
@@ -59,14 +53,12 @@ public class AdmobBannerAd extends CPContextObject implements CPBannerAd {
     public void requestAd() {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("3E7FAD19B95B5A4B3048CF6A5ED5D7D1")
                 .build();
 
         AdView adView = getAdView();
 
         if (adView != null) {
             adView.loadAd(adRequest);
-            Log.d("AdManager", "request admob banner ad");
         }
     }
 
@@ -75,8 +67,6 @@ public class AdmobBannerAd extends CPContextObject implements CPBannerAd {
         if (adView != null) {
             adView.destroy();
             adView = null;
-
-            Log.d("AdManager", "admob banner destroyed");
         }
     }
 
