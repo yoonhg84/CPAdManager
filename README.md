@@ -8,14 +8,12 @@ Admob, Facebook 등 다수의 광고를 함께 사용하기 위해 만들어봄.
 각 광고를 어떻게 처리할지를 구현해야 한다.
 
 ```java
-public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
+public class AdmobBannerAd extends CPContextObject implements CPBannerAd {
     protected AdView adView = null;
-    protected WeakReference<OnAdRequestListener> requestListenerReference = null;
+    protected WeakReference<OnBannerAdRequestListener> requestListenerReference = null;
 
-    public CPAdmobBannerAd(@NonNull Context context) {
+    public AdmobBannerAd(@NonNull Context context) {
         super(context);
-
-        MobileAds.initialize(context, getContext().getString(R.string.admob_app_id));
     }
 
     private AdListener adListener = new AdListener() {
@@ -26,7 +24,7 @@ public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
             Log.d("AdManager", "admob banner ad request failed");
 
             if (requestListenerReference != null && requestListenerReference.get() != null) {
-                requestListenerReference.get().onRequestFailure();
+                requestListenerReference.get().onBannerRequestFailure();
             }
         }
 
@@ -61,6 +59,7 @@ public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
     public void requestAd() {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("3E7FAD19B95B5A4B3048CF6A5ED5D7D1")
                 .build();
 
         AdView adView = getAdView();
@@ -77,12 +76,12 @@ public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
             adView.destroy();
             adView = null;
 
-            Log.d("AdManager", "admob destroyed");
+            Log.d("AdManager", "admob banner destroyed");
         }
     }
 
     @Override
-    public void setOnRequestListener(OnAdRequestListener listener) {
+    public void setOnBannerAdRequestListener(OnBannerAdRequestListener listener) {
         requestListenerReference = new WeakReference<>(listener);
     }
 }
@@ -94,10 +93,15 @@ public class CPAdmobBannerAd extends CPContextObject implements CPBannerAd {
 추가된 순서로 배너를 보여준다.
 
 ```java
-public class BannerAdsCreator implements CPAdManager.IBannerAdsCreator {
+public class AdsCreator implements CPAdManager.BannerAdsCreator, CPAdManager.InterstitialAdsCreator {
     @Override
     public CPBannerAd[] createBannerAds(Context context) {
-        return new CPBannerAd[] { new CPFacebookBannerAd(context), new CPAdmobBannerAd(context)};
+        return new CPBannerAd[] { new FacebookBannerAd(context), new AdmobBannerAd(context) };
+    }
+
+    @Override
+    public CPInterstitialAd[] createInterstitialAds(Context context) {
+        return new CPInterstitialAd[] { new FacebookInterstitialAd(context), new AdmobInterstitialAd(context) };
     }
 }
 ```
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         ViewGroup adLayout = (ViewGroup) findViewById(R.id.adLayout);
         Assert.assertNotNull(adLayout);
 
-        adManager = new CPAdManager(this, adLayout, new BannerAdsCreator());
+        adManager = new CPAdManager(this, adLayout, new AdsCreator());
         adManager.requestBanner();
     }
 
